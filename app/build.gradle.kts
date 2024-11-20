@@ -32,9 +32,9 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
-    implementation(libs.material)
+    // implementation(libs.material)
+    implementation("com.google.android.material:material:1.11.0")
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
