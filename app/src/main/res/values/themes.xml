@@ -7,5 +7,4 @@
         <item name="colorOnSurface">@color/white</item>
         <item name="colorSecondaryContainer">@color/blue_highlight</item>
     </style>
-
 </resources>

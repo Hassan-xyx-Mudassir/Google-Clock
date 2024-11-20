@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Google Clock</string>
+    <string name="alarm_fragment">Alarm Fragment</string>
+    <string name="timer_fragment">Timer Fragment</string>
+    <string name="stopwatch_fragment">Stopwatch Fragment</string>
+    <string name="clock_fragment">Clock Fragment</string>
+    <string name="bedtime_fragment">Bedtime Fragment</string>
 </resources>
