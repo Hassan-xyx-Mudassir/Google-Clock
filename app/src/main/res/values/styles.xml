@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="popupMenuBackground">@drawable/popup_menu_background</item>
+    </style>
+</resources>
