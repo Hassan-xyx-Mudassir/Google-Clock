@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.setSelectedItemId(R.id.nav_alarm);
         }
 
+
         // Handle navigation item selection
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
