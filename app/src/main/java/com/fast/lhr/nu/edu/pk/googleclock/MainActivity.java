@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new AlarmFragment();
                 title = "Alarm";
             } else if (itemId == R.id.nav_clock) {
-                fragment = new ClockFragment();
-                title = "Clock";
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ClockFragment(), "ClockFragment").commit();
+                return true;
             } else if (itemId == R.id.nav_timer) {
                 fragment = new TimerFragment();
                 title = "Timer";
@@ -71,10 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment, String title) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
