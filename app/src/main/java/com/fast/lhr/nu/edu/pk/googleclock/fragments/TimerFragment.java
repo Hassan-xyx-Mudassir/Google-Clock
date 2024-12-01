@@ -23,7 +23,7 @@ import com.fast.lhr.nu.edu.pk.googleclock.R;
 public class TimerFragment extends Fragment {
 
     private TextView timerDisplay;
-    private final StringBuilder inputBuffer = new StringBuilder();
+    private StringBuilder inputBuffer = new StringBuilder();
     private CountDownTimer countDownTimer;
     private boolean isTimerRunning = false;
     private long timeInMilliseconds = 0;
@@ -77,6 +77,11 @@ public class TimerFragment extends Fragment {
             if (view instanceof Button) {
                 Button button = (Button) view;
 
+                // Skip backspace button to prevent it from triggering handleKeypadInput
+                if (button.getId() == R.id.button_backspace) {
+                    continue; // Skip this iteration
+                }
+
                 // Add click listener for keypad input handling
                 button.setOnClickListener(v -> handleKeypadInput(button.getText().toString()));
 
@@ -94,6 +99,7 @@ public class TimerFragment extends Fragment {
             }
         }
 
+
         // Handle start button click
         startButton.setOnClickListener(v -> {
             if (isTimerRunning) {
@@ -105,22 +111,30 @@ public class TimerFragment extends Fragment {
 
         // Add OnClickListener for backspace button
         buttonBackspace.setOnClickListener(v -> {
-            Log.d("TimerFragment", "Backspace pressed. Current input buffer: " + inputBuffer);
+            try {
+                Log.d("TimerFragment", "Backspace pressed. Current input buffer: " + inputBuffer);
 
-            // Check if the input buffer is not empty before removing a character
-            if (inputBuffer.length() > 0) {
-                inputBuffer.deleteCharAt(inputBuffer.length() - 1); // Remove the last character
-                Log.d("TimerFragment", "Updated input buffer: " + inputBuffer); // Log the updated buffer
-                updateTimerDisplay(); // Update the timer display
+                if (inputBuffer.length() > 0) {
+                    inputBuffer.deleteCharAt(inputBuffer.length() - 1); // Remove the last character
+                    Log.d("TimerFragment", "Updated input buffer: " + inputBuffer);
+                    updateTimerDisplay();
+                } else {
+                    Log.d("TimerFragment", "Input buffer is empty, nothing to remove.");
+                }
 
-                // Hide the start button if input buffer is empty
+                // Hide the start button if the input buffer is empty
                 if (inputBuffer.length() == 0) {
                     startButton.setVisibility(View.INVISIBLE);
+                    timerDisplay.setText("00h 00m 00s"); // Clear the timer display
                 }
-            } else {
-                Log.d("TimerFragment", "Input buffer is empty, nothing to remove.");
+            } catch (Exception e) {
+                Log.e("TimerFragment", "Error while handling backspace: ", e);
             }
-        });
+
+    });
+
+
+
 
         return rootView;
     }
@@ -164,11 +178,13 @@ public class TimerFragment extends Fragment {
 
             // Transition to TimerPopupFragment
             requireActivity()
+
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, popupFragment) // Replace the current fragment
                     .addToBackStack(null) // Optional: Add to back stack
                     .commit();
+
         }
     }
 

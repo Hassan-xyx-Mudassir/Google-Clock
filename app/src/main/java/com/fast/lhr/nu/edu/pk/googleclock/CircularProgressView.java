@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.animation.ValueAnimator;
 
@@ -16,8 +17,11 @@ public class CircularProgressView extends View {
     private float progress = 0f; // Progress from 0 to 360 degrees
     private float strokeWidth = 30f; // Thickness of the circle
     private float radiusScaleFactor = 0.95f; // Factor to slightly shrink the radius
-    private final int backgroundColor = 0xFF454746;// Default gray color
+    private final int backgroundColor = 0xFF454746; // Default gray color
     private int progressColor = 0xFF007BFF; // Default blue color
+    private ValueAnimator currentAnimator; // To hold the current animator for pause/resume
+    private float currentProgress = 0f; // To store the current progress
+    private long remainingDuration = 0; // Store the remaining duration when paused
 
     public CircularProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -65,47 +69,102 @@ public class CircularProgressView extends View {
         canvas.drawArc(circleBounds, -90, progress, false, progressPaint);
     }
 
+    // Set the progress directly in degrees
     public void setProgress(float progress) {
         this.progress = progress; // Set progress in degrees
         invalidate(); // Redraw the view
     }
 
-    public void startProgressAnimation(int duration) {
-        ValueAnimator animator = ValueAnimator.ofFloat(0f, 360f); // Animate from 0 to full circle
-        animator.setDuration(duration); // Set animation duration
-        animator.addUpdateListener(animation -> {
-            setProgress((float) animation.getAnimatedValue());
-        });
-        animator.start();
+    // Start animation from full circle (360) to zero
+    public void startProgressAnimationFromFull(long duration) {
+        currentProgress = 360f; // Set the current progress to full circle
+        animateProgressToZero(duration);
     }
 
-    public void animateProgressToFull(int duration) {
-        ValueAnimator animator = ValueAnimator.ofFloat(progress, 360f); // Animate from current progress to full circle
-        animator.setDuration(duration); // Set animation duration
-        animator.addUpdateListener(animation -> {
-            setProgress((float) animation.getAnimatedValue());
-        });
-        animator.start();
-    }
-    public void animateProgressToZero(int duration) {
-        ValueAnimator animator = ValueAnimator.ofFloat(360f, 0f); // Animate from full circle (360) to zero
-        animator.setDuration(duration); // Set animation duration
-        animator.addUpdateListener(animation -> {
-            setProgress((float) animation.getAnimatedValue()); // Update the progress value
-        });
-        animator.start(); // Start the animation
+    // Start animation from zero to full circle
+    public void startProgressAnimation(long duration) {
+        currentProgress = 0f; // Set the current progress to zero
+        animateProgressToFull(duration);
     }
 
+    // Animate progress to full circle from current progress
+    public void animateProgressToFull(long duration) {
+        Log.d("CircularProgressView", "Animating to full");
+        // Stop any ongoing animation
+        if (currentAnimator != null && currentAnimator.isRunning()) {
+            currentAnimator.cancel();
+        }
 
+        currentAnimator = ValueAnimator.ofFloat(currentProgress, 360f); // Animate from current progress to full circle
+        currentAnimator.setDuration(duration);
+        currentAnimator.addUpdateListener(animation -> {
+            setProgress((float) animation.getAnimatedValue()); // Update progress value
+        });
+        currentAnimator.start();
+    }
+
+    // Animate progress to zero from current progress
+    public void animateProgressToZero(long duration) {
+        Log.d("CircularProgressView", "Animating to zero");
+        // Stop any ongoing animation
+        if (currentAnimator != null && currentAnimator.isRunning()) {
+            currentAnimator.cancel();
+        }
+
+        currentAnimator = ValueAnimator.ofFloat(currentProgress, 0f); // Animate from current progress to zero
+        currentAnimator.setDuration(duration);
+        currentAnimator.addUpdateListener(animation -> {
+            setProgress((float) animation.getAnimatedValue()); // Update progress value
+        });
+        currentAnimator.start();
+    }
+
+    // Reset the progress to 0 and set the progress circle color to gray
     public void resetProgress() {
-        progress = 0f; // Reset progress to 0
+        currentProgress = 0f; // Reset progress to 0
         progressPaint.setColor(backgroundColor); // Change progress circle color to gray
         invalidate(); // Redraw the view
     }
+    public void resetProgressToFull() {
+        currentProgress = 360f; // Reset progress to 360
+        progressPaint.setColor(progressColor); // Change progress circle color to gray
+        invalidate(); // Redraw the view
+    }
 
+    // Start a new lap: reset progress and change the color back to the original
     public void startNewLap() {
         resetProgress(); // Reset progress
         progressPaint.setColor(progressColor); // Change color back to blue
         invalidate();
+    }
+
+    // Pause the animation
+    public void pauseAnimation() {
+        if (currentAnimator != null && currentAnimator.isRunning()) {
+            currentProgress = (float) currentAnimator.getAnimatedValue(); // Store current progress
+            remainingDuration = currentAnimator.getDuration() - currentAnimator.getCurrentPlayTime(); // Store remaining duration
+            currentAnimator.cancel(); // Stop the animation
+        }
+    }
+
+    // Resume the animation
+    public void resumeAnimation() {
+        if (remainingDuration > 0) {
+            // Resume from the current progress
+            currentAnimator = ValueAnimator.ofFloat(currentProgress, 0f); // Resume animation from current progress to full
+            currentAnimator.setDuration(remainingDuration);
+            currentAnimator.addUpdateListener(animation -> {
+                setProgress((float) animation.getAnimatedValue()); // Update progress value
+            });
+            currentAnimator.start();
+        }
+    }
+
+    // Pause the animation and reset the progress
+    public void resetAndPauseAnimation() {
+        if (currentAnimator != null && currentAnimator.isRunning()) {
+            currentAnimator.cancel();
+        }
+        resetProgress(); // Reset progress
     }
 }

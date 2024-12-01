@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.fast.lhr.nu.edu.pk.googleclock.CircularProgressView;
 import com.fast.lhr.nu.edu.pk.googleclock.R;
 
 public class TimerPopupFragment extends Fragment {
@@ -29,6 +32,7 @@ public class TimerPopupFragment extends Fragment {
     private boolean isPaused = false; // Flag to track play/pause state
     private MediaPlayer mediaPlayer;
      private View cardView;
+    private CircularProgressView circularProgressView;
 
     @SuppressLint({"DefaultLocale", "MissingInflatedId"})
     @Nullable
@@ -44,15 +48,13 @@ public class TimerPopupFragment extends Fragment {
         restartButton = rootView.findViewById(R.id.restart_icon);
         closeButton = rootView.findViewById(R.id.close_button);
         cardView=rootView.findViewById(R.id.card_view);
-
+        circularProgressView=rootView.findViewById(R.id.circular_progress);
         // Stop button initialization (hidden by default)
         stopButton = rootView.findViewById(R.id.stop_button);
         stopButton.setVisibility(View.GONE);
 
-        // Stop button functionality
-        stopButton.setOnClickListener(v -> {
-            resetUIAfterTimerEnds();
-        });
+
+
 
         // Close button functionality
         closeButton.setOnClickListener(v -> {
@@ -83,7 +85,7 @@ public class TimerPopupFragment extends Fragment {
         // Display the timer values
         updateTimerDisplay();
         updateTitleDisplay();
-
+        circularProgressView.startProgressAnimationFromFull(timeInMilliseconds);
         // Start the countdown
         startTimer();
 
@@ -92,12 +94,15 @@ public class TimerPopupFragment extends Fragment {
             if (isPaused) {
                 restartButton.setVisibility(View.VISIBLE);
                 addTimeButton.setVisibility(View.VISIBLE);
+                circularProgressView.resumeAnimation();
                 // Resume the timer
                 startTimer();
                 playPauseButton.setImageResource(R.drawable.ic_pause1); // Set the image to "Pause"
             } else {
                 // Pause the timer
                 pauseTimer();
+                circularProgressView.pauseAnimation();
+
                 playPauseButton.setImageResource(R.drawable.ic_play1); // Set the image to "Play"
             }
             isPaused = !isPaused;
@@ -107,6 +112,7 @@ public class TimerPopupFragment extends Fragment {
         // Set up add time button functionality
         addTimeButton.setOnClickListener(v -> {
             // Add 1 minute (60,000 milliseconds) to the current time
+            Log.d("TimerFragment", "Time added " );
             if (timeInMilliseconds <= 0) {
                 timerDisplay.setTextColor(Color.parseColor("#FFFFFF"));
                 cardView.setBackgroundColor(Color.parseColor("#1c1c1c"));
@@ -123,7 +129,7 @@ public class TimerPopupFragment extends Fragment {
             }
             timeInMilliseconds += 60000; // Add 1 minute
             updateTimerDisplay(); // Update the timer display
-
+            circularProgressView.startProgressAnimationFromFull(timeInMilliseconds);
 
             // If the timer is running, restart with updated time
             if (!isPaused) {
@@ -134,6 +140,10 @@ public class TimerPopupFragment extends Fragment {
         // Set up restart button functionality
         restartButton.setOnClickListener(v -> {
             restartTimer();
+            circularProgressView.startProgressAnimationFromFull(timeInMilliseconds);
+        });
+        stopButton.setOnClickListener(v -> {
+            resetUIAfterTimerEnds();
         });
 
         return rootView;
@@ -179,8 +189,14 @@ public class TimerPopupFragment extends Fragment {
         countDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+
                 timeInMilliseconds -= 1000; // Decrease the time by 1 second
                 updateTimerDisplay();
+
+                // Animate the progress (only when it's near the end, e.g., last 10 seconds)
+
+                // Animate progress from current value to zero
+
 
                 // When the timer reaches zero
                 if (timeInMilliseconds <= 0) {
@@ -194,6 +210,7 @@ public class TimerPopupFragment extends Fragment {
             }
         }.start();
     }
+
 
     private void onTimerEnds() {
 
@@ -238,6 +255,8 @@ public class TimerPopupFragment extends Fragment {
         restartTimer();
         // Pause the timer
         pauseTimer();
+        circularProgressView.startProgressAnimationFromFull(timeInMilliseconds);
+        circularProgressView.pauseAnimation();
         playPauseButton.setImageResource(R.drawable.ic_play1);
         // Update the flag to indicate the timer is paused
         isPaused = true;
