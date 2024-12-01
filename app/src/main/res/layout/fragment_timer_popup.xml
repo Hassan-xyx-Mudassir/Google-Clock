@@ -15,12 +15,13 @@
         android:layout_height="500dp"
         android:layout_gravity="start"
         android:layout_marginTop="100dp"
+
         android:id="@+id/card_view"
        android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
         app:cardBackgroundColor="#1c1c1c"
-        app:cardCornerRadius="24dp"
+        app:cardCornerRadius="30dp"
         app:cardElevation="8dp">
 
         <!-- Main ConstraintLayout -->
@@ -36,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="1m 28s Timer"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="28sp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
