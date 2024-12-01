@@ -16,7 +16,7 @@ public class CircularProgressView extends View {
     private float progress = 0f; // Progress from 0 to 360 degrees
     private float strokeWidth = 30f; // Thickness of the circle
     private float radiusScaleFactor = 0.95f; // Factor to slightly shrink the radius
-    private int backgroundColor = 0xFFCCCCCC; // Default gray color
+    private final int backgroundColor = 0xFF454746;// Default gray color
     private int progressColor = 0xFF007BFF; // Default blue color
 
     public CircularProgressView(Context context, AttributeSet attrs) {
@@ -87,6 +87,15 @@ public class CircularProgressView extends View {
         });
         animator.start();
     }
+    public void animateProgressToZero(int duration) {
+        ValueAnimator animator = ValueAnimator.ofFloat(360f, 0f); // Animate from full circle (360) to zero
+        animator.setDuration(duration); // Set animation duration
+        animator.addUpdateListener(animation -> {
+            setProgress((float) animation.getAnimatedValue()); // Update the progress value
+        });
+        animator.start(); // Start the animation
+    }
+
 
     public void resetProgress() {
         progress = 0f; // Reset progress to 0

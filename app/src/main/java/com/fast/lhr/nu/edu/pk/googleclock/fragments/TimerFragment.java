@@ -102,46 +102,30 @@ public class TimerFragment extends Fragment {
                 startTimer();
             }
         });
-        if (buttonBackspace == null) {
-            Log.e("TimerFragment", "Backspace button not found in layout");
-        } else {
-            // Add OnClickListener for backspace
-            buttonBackspace.setOnClickListener(v -> {
-                Log.d("TimerFragment", "Backspace pressed. Current input buffer: " + inputBuffer);
 
-                // Check if the input buffer is not empty before removing a character
-                if (inputBuffer.length() > 0) {
-                    inputBuffer.deleteCharAt(inputBuffer.length() - 1); // Remove the last character
-                    Log.d("TimerFragment", "Updated input buffer: " + inputBuffer); // Log the updated buffer
-                    updateTimerDisplay(); // Update the timer display
+        // Add OnClickListener for backspace button
+        buttonBackspace.setOnClickListener(v -> {
+            Log.d("TimerFragment", "Backspace pressed. Current input buffer: " + inputBuffer);
 
-                    // Hide the start button if input buffer is empty
-                    if (inputBuffer.length() == 0) {
-                        startButton.setVisibility(View.INVISIBLE);
-                    }
-                } else {
-                    Log.d("TimerFragment", "Input buffer is empty, nothing to remove.");
+            // Check if the input buffer is not empty before removing a character
+            if (inputBuffer.length() > 0) {
+                inputBuffer.deleteCharAt(inputBuffer.length() - 1); // Remove the last character
+                Log.d("TimerFragment", "Updated input buffer: " + inputBuffer); // Log the updated buffer
+                updateTimerDisplay(); // Update the timer display
+
+                // Hide the start button if input buffer is empty
+                if (inputBuffer.length() == 0) {
+                    startButton.setVisibility(View.INVISIBLE);
                 }
-            });
-        }
-
+            } else {
+                Log.d("TimerFragment", "Input buffer is empty, nothing to remove.");
+            }
+        });
 
         return rootView;
     }
 
     private void handleKeypadInput(String input) {
-//        // Handle backspace
-//        if ("⌫".equals(input)) {
-//            if (inputBuffer.length() > 0) {
-//                inputBuffer.deleteCharAt(inputBuffer.length() - 1);
-//                updateTimerDisplay();
-//            }
-//            if (inputBuffer.length() == 0) {
-//                startButton.setVisibility(View.INVISIBLE);
-//            }
-//            return;
-//        }
-
         // Add digit(s) to input buffer
         if (inputBuffer.length() < 6) { // Max 6 digits for HHMMSS
             inputBuffer.append(input);
@@ -170,30 +154,24 @@ public class TimerFragment extends Fragment {
 
     private void startTimer() {
         if (timeInMilliseconds > 0) {
-            countDownTimer = new CountDownTimer(timeInMilliseconds, 1000) {
-                @SuppressLint("DefaultLocale")
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    timeInMilliseconds = millisUntilFinished;
-                    int hours = (int) (millisUntilFinished / 3600000);
-                    int minutes = (int) ((millisUntilFinished % 3600000) / 60000);
-                    int seconds = (int) ((millisUntilFinished % 60000) / 1000);
-                    timerDisplay.setText(String.format("%02dh %02dm %02ds", hours, minutes, seconds));
-                }
+            // Create an instance of TimerPopupFragment
+            TimerPopupFragment popupFragment = new TimerPopupFragment();
 
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onFinish() {
-                    timerDisplay.setText("00h 00m 00s");
-                    isTimerRunning = false;
-                }
-            }.start();
+            // Pass the timer values to the popup fragment
+            Bundle bundle = new Bundle();
+            bundle.putLong("timeInMilliseconds", timeInMilliseconds); // Pass the total time in milliseconds
+            popupFragment.setArguments(bundle);
 
-            isTimerRunning = true;
+            // Transition to TimerPopupFragment
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, popupFragment) // Replace the current fragment
+                    .addToBackStack(null) // Optional: Add to back stack
+                    .commit();
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private void stopTimer() {
         if (countDownTimer != null) {
             countDownTimer.cancel();
