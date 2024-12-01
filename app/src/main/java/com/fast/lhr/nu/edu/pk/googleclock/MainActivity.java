@@ -18,6 +18,8 @@ import com.fast.lhr.nu.edu.pk.googleclock.fragments.StopwatchFragment;
 import com.fast.lhr.nu.edu.pk.googleclock.fragments.TimerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -50,17 +52,14 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new AlarmFragment();
                 title = "Alarm";
             } else if (itemId == R.id.nav_clock) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ClockFragment(), "ClockFragment").commit();
-                return true;
+                fragment = new ClockFragment();
+                title = "Clock";
             } else if (itemId == R.id.nav_timer) {
                 fragment = new TimerFragment();
                 title = "Timer";
             } else if (itemId == R.id.nav_stopwatch) {
                 fragment = new StopwatchFragment();
                 title = "Stopwatch";
-            } else if (itemId == R.id.nav_bedtime) {
-                fragment = new BedtimeFragment();
-                title = "Bedtime";
             }
 
             if (fragment != null) {
@@ -72,7 +71,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment, String title) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        if (!Objects.equals(title, "Clock")) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        }
+        else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ClockFragment(), "ClockFragment").commit();
+        }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }

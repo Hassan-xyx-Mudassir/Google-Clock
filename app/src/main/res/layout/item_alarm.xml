@@ -1,0 +1,194 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    app:cardCornerRadius="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Alarm Time -->
+        <TextView
+            android:id="@+id/alarm_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4:00am"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <!-- Horizontal Layout for Alarm Day and Switch -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            tools:ignore="UseSwitchCompatOrMaterialXml">
+
+            <!-- Alarm Day -->
+            <TextView
+                android:id="@+id/alarm_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Today"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <!-- Alarm Switch -->
+            <Switch
+                android:id="@+id/alarm_switch"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- Expandable Section -->
+        <LinearLayout
+            android:id="@+id/expandable_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Days of the Week -->
+            <LinearLayout
+                android:id="@+id/days_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <!-- Repeated Button for Days -->
+                <Button
+                    android:id="@+id/btn_monday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/circle_gray"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="M"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_tuesday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/circle_gray"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="T"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_wednesday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/circle_gray"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="W"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_thursday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/circle_gray"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="T"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_friday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/circle_gray"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="F"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_saturday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/circle_gray"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="S"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_sunday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/circle_gray"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="S"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/gray" />
+
+
+            </LinearLayout>
+
+            <!-- Delete Option -->
+            <LinearLayout
+                android:id="@+id/delete_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <!-- Bin Icon -->
+                <ImageView
+                    android:id="@+id/delete_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_delete"
+                    app:tint="@color/white" />
+
+                <!-- Delete Text -->
+                <TextView
+                    android:id="@+id/delete_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Delete"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
