@@ -25,11 +25,4 @@
         android:icon="@drawable/ic_stopwatch"
         android:title="Stopwatch"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/nav_bedtime"
-        android:icon="@drawable/ic_bedtime"
-        android:title="Bedtime"
-        app:showAsAction="ifRoom" />
-
 </menu>
